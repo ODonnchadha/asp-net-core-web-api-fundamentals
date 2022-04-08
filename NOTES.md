@@ -52,6 +52,25 @@
         - Level 400: Client error. e.g.: 400 Bad request. 401: Unathorized. 403: Forbidden. 404: Not found. 409: Conflict.
         - Level 500: Server error. e.g.: 500 Internal server error.
   - Context Negotiation:
+    - The process of selecting the best representation for a given response when there are multiple representations available.
+    - Formatters & Content Negotation:
+      - The media type(s) are passed through via the Accept header of the request:
+        - application/json
+        - application/xml
+      - Supported via Output formatters.
+      - Input formatter: Media type: Content-Type header.
+      - Support is implemented by ObjectResult. Action result methods derive from it.
+      - Rule: First formatter is the list, either input or outout, is the default.
+  - Download file:
+    ```csharp
+      builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
+    ```
+  - Summary:
+    - Model: Application data logic. View: Display data. Controller. Interaction between View & Model.
+    - Routing matches a request URI to an action on a controller.
+    - Attribute-based routing is advised for APIs.
+    - Content negotiation is the process of selecting the best representation for a given response when there are multiple representations available.
+    - Use the File() method on the ControllerBase to retutn files. And set the correct media type wwith the response.
 
 - MANIPULATING RESOURCES & VALIDATING INPUT:
 
