@@ -1,5 +1,6 @@
 ﻿using CityInformation.API.DataStores;
 using CityInformation.API.DTOs;
+using CityInformation.API.Interfaces.Services;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,15 @@ namespace CityInformation.API.Controllers
     [ApiController(), Route("api/cities/{cityId}/pointsofinterest")]
     public class PointsOfInterestController : ControllerBase
     {
+        private readonly ILogger<PointsOfInterestController> _logger;
+        private readonly IMailService _service;
+        public PointsOfInterestController(
+            ILogger<PointsOfInterestController> logger, IMailService service)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _service = service ?? throw new ArgumentNullException(nameof(service));
+        }
+            
         [HttpGet("{interestId}", Name = "GetPointOfInterest")]
         public ActionResult<PointOfInterest> GetPointOfInterest(
             int cityId, int interestId)
@@ -29,15 +39,28 @@ namespace CityInformation.API.Controllers
         public ActionResult<IEnumerable<PointOfInterest>> GetPointsOfInterest(
             int cityId)
         {
-            var city = CityDataStore.Instance.Cities.FirstOrDefault(
-                c => c.Id == cityId);
-
-            if (city == null)
+            try
             {
-                return NotFound();
-            }
+                var city = CityDataStore.Instance.Cities.FirstOrDefault(
+                    c => c.Id == cityId);
 
-            return Ok(city.PointsOfInterest);
+                if (city == null)
+                {
+                    _logger.LogInformation(
+                        $"City {cityId} was not found when attempting to access GetPointsOfInterest.");
+
+                    return NotFound();
+                }
+
+                return Ok(city.PointsOfInterest);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(
+                    $"City {cityId} resulted in a critical GetPointsOfInterest error.", ex);
+
+                return StatusCode(500, "Keyboard not detected. Press F2 to continue.");
+            }
         }
 
         [HttpDelete("{interestId}")]
@@ -54,6 +77,8 @@ namespace CityInformation.API.Controllers
             }
 
             city.PointsOfInterest.Remove(point);
+
+            _service.Send($"PoI for {city.Name}.", $"PoI {point.Name} was deleted.");
 
             return NoContent();
         }

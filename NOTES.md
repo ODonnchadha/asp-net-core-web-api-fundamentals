@@ -112,6 +112,36 @@
     - DELETE is for deleting resources. 204: No Content.
 
 - WORKING WITH SERVICES & DEPENDENCY INJECTION:
-  - Logging.
+  - Inversion of Control & Dependency Injection:
+    - Class implementation has to change when a dependency changes. Difficult to test.
+    - Class manages the lifetime of the dependency. This is tight coupling.
+    - IoC: Delegates the function of selecting a concrete implementation type for a class's dependencies to an external component.
+    - DI: A specialization of the IoC pattern which uses an object, the container, to initialize objects and provide the required dependencies to the object.
+    - Services are registered on the container.
+    - The container becomes responsible for providing instances when needed: It manages the service lifetime.
+    - Interface: Not a concrete implementation. Class is decoupled from the concrete type.
+    - Dependencies can be easily replaced. And with micking, the class becomes easier to test.
+    - Dependency injection is built into ASP.NET Core. Register services on the built-in container in your Program class.
+    - Use constructor injection when ever possible.
+  - Logging in ASP.NET Core:
+    ```csharp
+      builder.Logging.ClearProviders();
+    ```
+    - Serilog:
+    ```javascript
+      install-package serilog.sinks.file
+      install-package serilog.sinks.console
+    ```
+  - Creating & using custom services:
+  - Working with configuration files & scoping them to environments:
+  - Summary:
+    - Dependency Injection: Specialization of IoC. Loose coupling. Less code changes. Better testability.
+    - Custom services are registered on the built-in container.
+      - Transient.
+      - Scoped.
+      - Singleton.
+    - Use configuration files for consiguration data, scoped to a specific environment.
 
 - GETTING AQUAINTED WITH ENTITY FRAMEWORK CORE:
+  - ORM. EF Core.
+  - 
