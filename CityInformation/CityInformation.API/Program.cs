@@ -6,7 +6,7 @@ builder.Services.AddControllers(options =>
 {
     // e.g.: Accept: application/xml. Status: 406 Not Acceptable.
     options.ReturnHttpNotAcceptable = true;
-});//.AddXmlDataContractSerializerFormatters();
+}).AddNewtonsoftJson();//.AddXmlDataContractSerializerFormatters();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

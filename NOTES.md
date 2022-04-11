@@ -73,7 +73,45 @@
     - Use the File() method on the ControllerBase to retutn files. And set the correct media type wwith the response.
 
 - MANIPULATING RESOURCES & VALIDATING INPUT:
+  - Manipulating Resources:
+  - Passing Data To The API:
+    - Data can be passed to an API by various means. 
+    - Binding source attributes tell the model bnding engine where to find the binding source.
+        Use binding source attributes to explicitly state where the action parameter should be bound from.
+      ```csharp
+        public ActionResult<DTO> Get([FromRoute()] int id]);
+      ```
+    - By default ASP.NET Core attempts to use the complex object model binder.
+    - The [ApiController()] attribute changes the rules to beter fit APIs.
+    - [FromBody()] Inferred for complex types.
+    - [FromForm()] Inferred for action parameters of type IFormFile & IFormFileCollection.
+    - [FromQuery()] Inferred for any other action parameters.
+    - [FromRoute()] Inferred for any action parameter name matching a parameter in the route template.
+    - [FromHeader()], [FromService()].
+    - Creating Resources:
+      -  We get the following snippit for free with [ApiController()]:
+        ```csharp
+          if (!ModelState.IsValid)
+          {
+            return BadRequest();
+          }
+        ```
+      - Validation alternatives: This built-in approach is acceptable for simple use cases.
+        - For complex rules, consider FluentVaidation.
+    - Updating Resources:
+      - Full versus partial updates. PUT for full.
+      - Partially updating a resource: Json PATCH (RFC 6902.)
+        - Describes a document structure for expressing a sequence of operations to a JSON document.
+        - Array of operations. "Replace operation." Microsoft.AspNetCore.JsonPatch. Note the dependencies.
+    - Deleting Resources:
+  - Validating Input:
+  - Summary:
+    - Use POST for creating a resource. 201 Created. Header: Content-Type.
+    - Validation: Data annotations & ModelState.
+    - Use PUT for full updates & PATCH for partial updates. JsonPatch standard. - 204 No Content. (or 200 Ok.)
+    - DELETE is for deleting resources. 204: No Content.
 
 - WORKING WITH SERVICES & DEPENDENCY INJECTION:
+  - Logging.
 
 - GETTING AQUAINTED WITH ENTITY FRAMEWORK CORE:
