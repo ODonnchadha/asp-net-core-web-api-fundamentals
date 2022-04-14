@@ -1,5 +1,7 @@
 using CityInformation.API.Contexts.DbContexts;
+using CityInformation.API.Interfaces.Repositories;
 using CityInformation.API.Interfaces.Services;
+using CityInformation.API.Repositories;
 using CityInformation.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +25,7 @@ builder.Services.AddControllers(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
 
@@ -36,6 +39,8 @@ builder.Services.AddDbContext<CityInformationContext>(options =>
 {
     options.UseSqlite(builder.Configuration["ConnectionStrings:X"]);
 });
+
+builder.Services.AddScoped<ICityInformationRepository, CityInformationRepository>();
 
 var app = builder.Build();
 
