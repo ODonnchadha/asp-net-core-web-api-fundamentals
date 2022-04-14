@@ -143,5 +143,38 @@
     - Use configuration files for consiguration data, scoped to a specific environment.
 
 - GETTING AQUAINTED WITH ENTITY FRAMEWORK CORE:
-  - ORM. EF Core.
-  - 
+  - ORM. EF Core. Migrations. Seeding.
+  - Object-relational Mapping, ORM, is a technique that lets you query and mianipulate data from a database using an object-oriented paradigm.
+  - Problems:
+    - Relational models and object models do not work very well together.
+    - Tabular database format versus an interconnected object graph.
+  - Solution:
+    - An ORM provides the library that implements the object-relational mapping technique.
+    - It takes care of mapping between that tabular format and the object graph.
+  - EF Core supports a variety of DBs, even non-relational.
+  - Code-first or database-first approach.
+  - DbContext.
+    ```csharp
+      protected override void OnConfiguring(DbContextOptionsBuilder builder)
+      {
+        builder.UseSqlite("ConnectionString");
+        base.OnConfiguring(builder);
+      }
+    ```
+  - Migrations:
+    ```javascript
+      add-migration INIT
+      update-database
+    ```
+  - Safe location, environment variables, for "production" ConnectionStrings. NOTE: Use system variables.
+  - Summary:
+    - Object-Relational Mapping (ORM) is a technique that lets you query and manipulate data from a database using an object-oriented paradigm.
+    - Seperate entity models from the outer-facing DTOs.
+      - Use conventions or annotations for keys, required fields, etc...
+    - The DbContext represents a session with the database and can be used to query and save instances of entities.
+    - Migrations allow you to provide code to change the database from one verion to another.
+    - Seeding the database is providing it with data to start woth. HasData() method is used when configuring the model.
+    - Use environment variables for safer storage of sensitive data.
+
+- USING EF CORE IN CONTROLLERS:
+- 

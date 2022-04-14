@@ -27,7 +27,7 @@ namespace CityInformation.API.DataStores
                         {
                             Id = 2,
                             Name = "Enger Tower",
-                            Description = "A pavilion featuring broken galss everywhere along with the smell of urine."
+                            Description = "A pavilion featuring broken glass everywhere along with the smell of urine."
                         },
                     }
                 },

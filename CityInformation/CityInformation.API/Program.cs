@@ -1,6 +1,8 @@
+using CityInformation.API.Contexts.DbContexts;
 using CityInformation.API.Interfaces.Services;
 using CityInformation.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -29,6 +31,11 @@ builder.Services.AddSingleton<IMailService, LocalMailService>();
 #else
 builder.Services.AddSingleton<IMailService, CloudMailService>();
 #endif
+
+builder.Services.AddDbContext<CityInformationContext>(options =>
+{
+    options.UseSqlite(builder.Configuration["ConnectionStrings:X"]);
+});
 
 var app = builder.Build();
 
