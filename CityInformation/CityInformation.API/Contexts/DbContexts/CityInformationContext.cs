@@ -34,7 +34,7 @@ namespace CityInformation.API.Contexts.DbContexts
                 {
                     Id = 2,
                     CityId = 1,
-                    Description = "A three-story pavilion featuring broken glass and the smell of urine."
+                    Description = "A five-story pavilion featuring broken glass and the smell of urine."
                 },
                 new PointOfInterest("Anchor Bar & Grill")
                 {

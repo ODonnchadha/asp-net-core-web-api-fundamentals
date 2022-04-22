@@ -1,5 +1,7 @@
-﻿using CityInformation.API.DataStores;
+﻿using AutoMapper;
+using CityInformation.API.DataStores;
 using CityInformation.API.DTOs;
+using CityInformation.API.Interfaces.Repositories;
 using CityInformation.API.Interfaces.Services;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -9,42 +11,54 @@ namespace CityInformation.API.Controllers
     [ApiController(), Route("api/cities/{cityId}/pointsofinterest")]
     public class PointsOfInterestController : ControllerBase
     {
+        private readonly ICityInformationRepository _repository;
         private readonly ILogger<PointsOfInterestController> _logger;
         private readonly IMailService _service;
+        private readonly IMapper _mapper;
         public PointsOfInterestController(
-            ILogger<PointsOfInterestController> logger, IMailService service)
+            ICityInformationRepository repository,
+            ILogger<PointsOfInterestController> logger, IMailService service, IMapper mapper)
         {
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _service = service ?? throw new ArgumentNullException(nameof(service));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
             
         [HttpGet("{interestId}", Name = "GetPointOfInterest")]
-        public ActionResult<PointOfInterest> GetPointOfInterest(
+        public async Task<ActionResult<PointOfInterest>> GetPointOfInterest(
             int cityId, int interestId)
         {
-            var city = CityDataStore.Instance.Cities.FirstOrDefault(
-                c => c.Id == cityId);
-            var pointOfInterest = city?.PointsOfInterest?.FirstOrDefault(
-                p => p.Id == interestId);
+            var exists = await _repository.CityExistsAsync(cityId);
 
-            if (city == null || pointOfInterest == null)
+            if (exists.Equals(false))
+            {
+                _logger.LogInformation(
+                    $"City {cityId} was not found when attempting to access GetPointOfInterest.");
+
+                return NotFound();
+            }
+
+            var pointOfInterest = await _repository.GetPointOfInterestAsync(cityId, interestId);
+
+            if (pointOfInterest == null)
             {
                 return NotFound();
             }
 
-            return Ok(pointOfInterest);
+            var result = _mapper.Map<PointOfInterest>(pointOfInterest);
+
+            return Ok(result);
         }
 
         [HttpGet()]
-        public ActionResult<IEnumerable<PointOfInterest>> GetPointsOfInterest(
-            int cityId)
+        public async Task<ActionResult<IEnumerable<PointOfInterest>>> GetPointsOfInterest(int cityId)
         {
             try
             {
-                var city = CityDataStore.Instance.Cities.FirstOrDefault(
-                    c => c.Id == cityId);
-
-                if (city == null)
+                var exists = await _repository.CityExistsAsync(cityId);
+                
+                if (exists.Equals(false))
                 {
                     _logger.LogInformation(
                         $"City {cityId} was not found when attempting to access GetPointsOfInterest.");
@@ -52,12 +66,16 @@ namespace CityInformation.API.Controllers
                     return NotFound();
                 }
 
-                return Ok(city.PointsOfInterest);
+                var points = await _repository.GetPointsOfInterestAsync(cityId);
+
+                var result = _mapper.Map<IEnumerable<PointOfInterest>>(points);
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
                 _logger.LogCritical(
-                    $"City {cityId} resulted in a critical GetPointsOfInterest error.", ex);
+                    $"City {cityId} assisted in a critical GetPointsOfInterest error.", ex);
 
                 return StatusCode(500, "Keyboard not detected. Press F2 to continue.");
             }
@@ -117,28 +135,38 @@ namespace CityInformation.API.Controllers
         }
 
         [HttpPost()]
-        public ActionResult<PointOfInterest> CreatePointOfInterest(
+        public async Task<ActionResult<PointOfInterest>> CreatePointOfInterest(
             int cityId, PointOfInterestForCreation dto)
         {
-            var city = CityDataStore.Instance.Cities.FirstOrDefault(
-                c => c.Id == cityId);
-
-            if (city == null)
+            //var city = CityDataStore.Instance.Cities.FirstOrDefault(
+            //    c => c.Id == cityId);
+            if (!await _repository.CityExistsAsync(cityId))
             {
+                _logger.LogInformation(
+                    $"City {cityId} was not found when attempting to CreatePointOfInterest.");
+
                 return NotFound();
             }
+            //if (city == null)
+            //{
+            //    return NotFound();
+            //}
 
-            // Demo Only.
-            var max = CityDataStore.Instance.Cities.SelectMany(
-                c => c.PointsOfInterest).Max(p => p.Id);
+            //var max = CityDataStore.Instance.Cities.SelectMany(
+            //    c => c.PointsOfInterest).Max(p => p.Id);
 
-            var p = new PointOfInterest { Id = ++max, 
-                Name = dto.Name, Description = dto.Description };
+            //var p = new PointOfInterest { Id = ++max, 
+            //    Name = dto.Name, Description = dto.Description };
+            var p = _mapper.Map<Entities.PointOfInterest>(dto);
 
-            city.PointsOfInterest.Add(p);
+            //city.PointsOfInterest.Add(p);
+            await _repository.AddPointOfInterestForCityAsync(cityId, p);
+            await _repository.SaveChangesAsync();
+
+            var point = _mapper.Map<DTOs.PointOfInterest>(p);
 
             return CreatedAtRoute("GetPointOfInterest", 
-                new { cityId = cityId, interestId = p.Id }, p);
+                new { cityId = cityId, interestId = point.Id }, point);
         }
 
         [HttpPut("{interestId}")]
