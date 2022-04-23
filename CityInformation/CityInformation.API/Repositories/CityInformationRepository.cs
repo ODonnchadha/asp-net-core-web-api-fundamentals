@@ -23,7 +23,7 @@ namespace CityInformation.API.Repositories
 
         public async Task<bool> CityExistsAsync(int cityId) =>
             await _context.Cities.AnyAsync(c => c.Id == cityId);
-
+        public void DeletePointOfInterest(PointOfInterest point) => _context.PointsOfInterest.Remove(point);
         public async Task<IEnumerable<City>> GetCitiesAsync() => 
             await _context.Cities.OrderBy(c => c.Name).ToListAsync();
         public async Task<City?> GetCityAsync(int cityId, bool includePointsOfInterest)

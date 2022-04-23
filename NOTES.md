@@ -177,7 +177,7 @@
     - Use environment variables for safer storage of sensitive data.
 
 - USING EF CORE IN CONTROLLERS:
-- Introducing the repository pattern. e.g.: ASYNC.
+  - Introducing the repository pattern. e.g.: ASYNC.
   - An abstraction that reduces complexity and aims to make the code persistence ignorant.
   - None:
     - Code duplication. More error-prone. Harder to test the consuming class.
@@ -185,4 +185,11 @@
     - No duplication. Less error-prone. Better testablity of the consuming class.
   - Persistence Ignorant: Switching out the persistence technology is not the main urpose. Choosing the best one for each repository method is.
   - The purpose of Async code: Freeing up threads so they can be used for other tasks, which improves application scalability.
-- CRUD operations via EF Core.
+    - CRUD operations via EF Core.
+  - Summary:
+    - Repository pattern is an abstraction that reduces complexity and aims to make the code, safe for the repository implementation, persistence ignorant.
+    - Using async code for I/O operations ensures threads can be freed up fster, resulting in improved scalability.
+    - Using AutoMapper greatly reduces error-prone mapping code.
+
+- SEARCHING, FILTERING, & PAGING RESOURCES:
+  - 
