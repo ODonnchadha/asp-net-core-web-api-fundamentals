@@ -203,3 +203,9 @@
     - A query variable stores query commands, not results. IQueryable<T> creates an expression tree.
     - Execution is deferred until the query os iterated over. 
       - foreach loop. ToList(), ToArray(), or ToDictionary(). Singleton queries: e.g.: Count(), Average().
+  - Paging Through Resources: 
+    - Collection resources ften grow quite large. Implement paging on all of them.
+    - Paging helps avoid performance issues.
+    - Pass parameters via the query string. e.g.: ?pageNumber=1&pageSize=4. PageSize should be limited. Page by default.
+  - NOTE: Page all the way through to the underlying datastore.
+  - Pagination Metadata:

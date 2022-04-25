@@ -8,6 +8,8 @@ namespace CityInformation.API.Controllers
     [ApiController(), Route("api/cities")]
     public class CitiesController : ControllerBase
     {
+        const int MAX_PAGE_SIZE = 20;
+
         private readonly ICityInformationRepository _repository;
         private readonly IMapper _mapper;
         public CitiesController(ICityInformationRepository repository, IMapper mapper)
@@ -23,9 +25,12 @@ namespace CityInformation.API.Controllers
         /// <returns></returns>
         [HttpGet()]
         public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterest>>> GetCities(
-            [FromQuery]string? name, [FromQuery]string? searchQuery)
+            [FromQuery]string? name, [FromQuery]string? searchQuery,
+            [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            var cities = await _repository.GetCitiesAsync(name, searchQuery);
+            if (pageSize > MAX_PAGE_SIZE) pageSize = MAX_PAGE_SIZE;
+
+            var cities = await _repository.GetCitiesAsync(name, searchQuery, pageNumber, pageSize);
 
             var results = _mapper.Map<IEnumerable<CityWithoutPointsOfInterest>>(cities);
 

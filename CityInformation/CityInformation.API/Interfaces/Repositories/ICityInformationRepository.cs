@@ -13,7 +13,8 @@ namespace CityInformation.API.Interfaces.Repositories
         Task<bool> SaveChangesAsync();
         Task<City?> GetCityAsync(int cityId, bool includePointsOfInterest);
         Task<IEnumerable<City>> GetCitiesAsync();
-        Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchQuery);
+        Task<IEnumerable<City>> GetCitiesAsync(
+            string? name, string? searchQuery, int pageNumber, int pageSize);
         Task<PointOfInterest?> GetPointOfInterestAsync(int cityId, int interestId);
         Task<IEnumerable<PointOfInterest>> GetPointsOfInterestAsync(int cityId);
     }

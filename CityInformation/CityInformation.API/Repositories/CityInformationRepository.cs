@@ -25,13 +25,9 @@ namespace CityInformation.API.Repositories
         public async Task<IEnumerable<City>> GetCitiesAsync() => 
             await _context.Cities.OrderBy(c => c.Name).ToListAsync();
 
-        public async Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchQuery)
+        public async Task<IEnumerable<City>> GetCitiesAsync(
+            string? name, string? searchQuery, int pageNumber, int pageSize)
         {
-            if (string.IsNullOrEmpty(name) && string.IsNullOrEmpty(searchQuery))
-            {
-                return await GetCitiesAsync();
-            }
-
             // Obtain collection, via deferred execution, from which to work:
             var collection = _context.Cities as IQueryable<City>;
 
@@ -46,7 +42,8 @@ namespace CityInformation.API.Repositories
                     (c.Description != null && c.Description.Contains(searchQuery)));
             }
 
-            return await collection.OrderBy(c => c.Name).ToListAsync();
+            return await collection.OrderBy(
+                c => c.Name).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
         }
         public async Task<City?> GetCityAsync(int cityId, bool includePointsOfInterest)
         {
