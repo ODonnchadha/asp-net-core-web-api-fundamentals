@@ -16,6 +16,22 @@ namespace CityInformation.API.Controllers
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
+        /// <summary>
+        /// With filter, ensure nullable name: string? name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [HttpGet()]
+        public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterest>>> GetCities(
+            [FromQuery]string? name, [FromQuery]string? searchQuery)
+        {
+            var cities = await _repository.GetCitiesAsync(name, searchQuery);
+
+            var results = _mapper.Map<IEnumerable<CityWithoutPointsOfInterest>>(cities);
+
+            return Ok(results);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCity(int id, bool includePointsOfInterest = false)
         {
@@ -32,16 +48,6 @@ namespace CityInformation.API.Controllers
             }
 
             return Ok(_mapper.Map<CityWithoutPointsOfInterest>(city));
-        }
-
-        [HttpGet()]
-        public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterest>>> GetCities()
-        {
-            var cities = await _repository.GetCitiesAsync();
-
-            var results = _mapper.Map<IEnumerable<CityWithoutPointsOfInterest>>(cities);
-
-            return Ok(results);
         }
     }
 }

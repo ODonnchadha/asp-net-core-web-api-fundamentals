@@ -192,4 +192,14 @@
     - Using AutoMapper greatly reduces error-prone mapping code.
 
 - SEARCHING, FILTERING, & PAGING RESOURCES:
-  - 
+  - Filtering: Limiting the collection taking into account a predicate. 
+    - Pass the field name & value via query string. Filter is applied to the field name.
+  - Searching: Adding matching items to the collection based on a predefined set of rules.
+    - Pass through a value to search for via the query string. It's up to the API to decide how to implement the search functionality.
+  - Filtering allows you to be percise by adding filters until you get exactly the results you want.
+  - Searching allows you to go wider. It's used when you don't exactly know which items will be in the collection.
+  - NOTE: ORM EF checks for SQL injection.
+  - NOTE: Deferred Execution: Query execution occurs sometime after the query is constructed.
+    - A query variable stores query commands, not results. IQueryable<T> creates an expression tree.
+    - Execution is deferred until the query os iterated over. 
+      - foreach loop. ToList(), ToArray(), or ToDictionary(). Singleton queries: e.g.: Count(), Average().

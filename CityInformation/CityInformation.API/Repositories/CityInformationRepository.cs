@@ -10,7 +10,6 @@ namespace CityInformation.API.Repositories
         private readonly CityInformationContext _context;
         public CityInformationRepository(CityInformationContext context) =>
             _context = context ?? throw new ArgumentNullException(nameof(context));
-
         public async Task AddPointOfInterestForCityAsync(int cityId, PointOfInterest point)
         {
             var city = await GetCityAsync(cityId, false);
@@ -20,12 +19,35 @@ namespace CityInformation.API.Repositories
                 city.PointsOfInterest.Add(point);
             }
         }
-
         public async Task<bool> CityExistsAsync(int cityId) =>
             await _context.Cities.AnyAsync(c => c.Id == cityId);
         public void DeletePointOfInterest(PointOfInterest point) => _context.PointsOfInterest.Remove(point);
         public async Task<IEnumerable<City>> GetCitiesAsync() => 
             await _context.Cities.OrderBy(c => c.Name).ToListAsync();
+
+        public async Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchQuery)
+        {
+            if (string.IsNullOrEmpty(name) && string.IsNullOrEmpty(searchQuery))
+            {
+                return await GetCitiesAsync();
+            }
+
+            // Obtain collection, via deferred execution, from which to work:
+            var collection = _context.Cities as IQueryable<City>;
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                collection = collection.Where(c => c.Name == name.Trim());
+            }
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                searchQuery = searchQuery.Trim();
+                collection = collection.Where(c => c.Name.Contains(searchQuery) ||
+                    (c.Description != null && c.Description.Contains(searchQuery)));
+            }
+
+            return await collection.OrderBy(c => c.Name).ToListAsync();
+        }
         public async Task<City?> GetCityAsync(int cityId, bool includePointsOfInterest)
         {
             if (includePointsOfInterest)
