@@ -228,4 +228,16 @@
   - Supporting & implementing token-based security.
   - Working with authorization policies.
   - OAuth2 & OpenID Connect.
-  - Application-level security.
+  - Application-level security. & securing APIs:
+    - Which entity, user or application, is trying to access the API? ANd can we verify?
+    - Token-based security. Send a token on each request. A token represents consent.
+    - Validaye the token at the level of the API. This approach works for almost all modern application types.
+  - Implementing Token-based Security:
+    - API "login" endpoint accepting a username & password.
+      - Three things:
+      - Payload: JSON that contains generic token information, like when the token was created and some information about the user.
+      - Signature: A hash of the payload used to ensure that the data was not tampered with.
+      - Header: Essential token information luke the key algorithm used for signing.
+    - Ensure the API can only be accessed with a valid token.
+    - Pass the token from the client to the API as a Bearer token on each request. e.g.: Authorization Bearer mytoken123.
+    - [JSON Web Tokens](https://jwt.io/)
