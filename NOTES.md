@@ -208,4 +208,24 @@
     - Paging helps avoid performance issues.
     - Pass parameters via the query string. e.g.: ?pageNumber=1&pageSize=4. PageSize should be limited. Page by default.
   - NOTE: Page all the way through to the underlying datastore.
-  - Pagination Metadata:
+  - Pagination Metadata: Which often includes:
+    - Total amount of items. Total amount of pages. Current page number. Page size.
+    - An enevelope that includes a value & meta property isn't a JSON representation of the collection resource.
+    - It's a JSON representation of the collection with paging metadata.
+  - When requesting application/json, paging metadata isb't part of the resource representation.
+  - Use a custom header, like: X-Pagination.
+  - SUMMARY:
+    - Filtering allows you to be percise by adding filters until you get exactly the results you want.
+    - Searching allows you to go wider: It's used when you don't exacty know which items will be in the collection.
+    - Deferred execution means query execution occurs sometime after the query is constructed.
+    - When correctly implemented, paging will improve performance.
+    - Pass page size and page number as query string parameters. 
+      - Limit page size. Provide default values for page size & page number.
+    - Page all the way through to the underlying data store. Deferred execution. Skip(), Taks().
+    - Page by default. Return pagination metadata in a custom pagination header.
+
+- SECURING YOUR API:
+  - Supporting & implementing token-based security.
+  - Working with authorization policies.
+  - OAuth2 & OpenID Connect.
+  - Application-level security.

@@ -1,6 +1,7 @@
 ﻿using CityInformation.API.Contexts.DbContexts;
 using CityInformation.API.Entities;
 using CityInformation.API.Interfaces.Repositories;
+using CityInformation.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CityInformation.API.Repositories
@@ -25,7 +26,15 @@ namespace CityInformation.API.Repositories
         public async Task<IEnumerable<City>> GetCitiesAsync() => 
             await _context.Cities.OrderBy(c => c.Name).ToListAsync();
 
-        public async Task<IEnumerable<City>> GetCitiesAsync(
+        /// <summary>
+        /// Tuple.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="searchQuery"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public async Task<(IEnumerable<City>, PaginationMetadata)> GetCitiesAsync(
             string? name, string? searchQuery, int pageNumber, int pageSize)
         {
             // Obtain collection, via deferred execution, from which to work:
@@ -42,8 +51,14 @@ namespace CityInformation.API.Repositories
                     (c.Description != null && c.Description.Contains(searchQuery)));
             }
 
-            return await collection.OrderBy(
+            var count = await collection.CountAsync();
+
+            var meta = new PaginationMetadata(count, pageSize, pageNumber);
+
+            var result = await collection.OrderBy(
                 c => c.Name).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
+
+            return(result, meta);
         }
         public async Task<City?> GetCityAsync(int cityId, bool includePointsOfInterest)
         {

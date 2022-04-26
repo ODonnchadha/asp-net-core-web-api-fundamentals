@@ -1,9 +1,10 @@
 ﻿using CityInformation.API.Entities;
+using CityInformation.API.Models;
 
 namespace CityInformation.API.Interfaces.Repositories
 {
     /// <summary>
-    /// Task<IQueryable<City>> GetCitiesAsync();
+    /// IEnumerable versus Task<IQueryable<City>> GetCitiesAsync();
     /// </summary>
     public interface ICityInformationRepository
     {
@@ -13,7 +14,7 @@ namespace CityInformation.API.Interfaces.Repositories
         Task<bool> SaveChangesAsync();
         Task<City?> GetCityAsync(int cityId, bool includePointsOfInterest);
         Task<IEnumerable<City>> GetCitiesAsync();
-        Task<IEnumerable<City>> GetCitiesAsync(
+        Task<(IEnumerable<City>, PaginationMetadata)> GetCitiesAsync(
             string? name, string? searchQuery, int pageNumber, int pageSize);
         Task<PointOfInterest?> GetPointOfInterestAsync(int cityId, int interestId);
         Task<IEnumerable<PointOfInterest>> GetPointsOfInterestAsync(int cityId);
