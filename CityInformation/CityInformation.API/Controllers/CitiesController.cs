@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using CityInformation.API.DTOs;
 using CityInformation.API.Interfaces.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace CityInformation.API.Controllers
 {
-    [ApiController(), Route("api/cities")]
+    [ApiController(), Authorize(), Route("api/cities")]
     public class CitiesController : ControllerBase
     {
         const int MAX_PAGE_SIZE = 20;

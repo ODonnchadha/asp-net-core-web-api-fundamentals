@@ -241,3 +241,5 @@
     - Ensure the API can only be accessed with a valid token.
     - Pass the token from the client to the API as a Bearer token on each request. e.g.: Authorization Bearer mytoken123.
     - [JSON Web Tokens](https://jwt.io/)
+  - Requiring & Validating a token:
+    - Middleware. JwtBearer.

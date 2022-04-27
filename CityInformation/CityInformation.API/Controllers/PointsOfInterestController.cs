@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using CityInformation.API.DataStores;
 using CityInformation.API.DTOs;
 using CityInformation.API.Interfaces.Repositories;
 using CityInformation.API.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CityInformation.API.Controllers
 {
-    [ApiController(), Route("api/cities/{cityId}/pointsofinterest")]
+    [ApiController(), Authorize(), Route("api/cities/{cityId}/pointsofinterest")]
     public class PointsOfInterestController : ControllerBase
     {
         private readonly ICityInformationRepository _repository;
