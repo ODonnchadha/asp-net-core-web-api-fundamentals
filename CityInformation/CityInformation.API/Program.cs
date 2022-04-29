@@ -6,7 +6,9 @@ using CityInformation.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Reflection;
 using System.Text;
 
 Log.Logger = new LoggerConfiguration()
@@ -25,8 +27,37 @@ builder.Services.AddControllers(options =>
     options.ReturnHttpNotAcceptable = true;
 }).AddNewtonsoftJson();//.AddXmlDataContractSerializerFormatters();
 
+// Swashbuckle.AspNetCore:
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(setup =>
+{
+    var xml = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var path = Path.Combine(AppContext.BaseDirectory, xml);
+    setup.IncludeXmlComments(path);
+
+    setup.AddSecurityDefinition("A", 
+        new OpenApiSecurityScheme
+        { 
+            Type = SecuritySchemeType.Http,
+            Scheme = "Bearer",
+            Description = "A valid JWT is required to access CityInformation.API"
+        });
+    setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {         
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "A"
+                }
+            }, new List<string>() 
+        }
+    });
+});
+
+#if DEBUG
 builder.Services.AddAuthentication("Bearer").AddJwtBearer(bearer =>
 {
     bearer.TokenValidationParameters = new()
@@ -41,9 +72,27 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer(bearer =>
                     builder.Configuration["Authentication:SecretKeyFor"]))
     };
 });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("MustBeFormerDuluthMayorJohnFedo", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("given_name", "John");
+        policy.RequireClaim("family_name", "Fedo");
+        policy.RequireClaim("city", "Duluth");
+    });
+});
+#else
+#endif
+
+builder.Services.AddApiVersioning(setup =>
+{
+    setup.AssumeDefaultVersionWhenUnspecified = true;
+    setup.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+    setup.ReportApiVersions = true;
+});
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
 
 #if DEBUG
@@ -71,9 +120,13 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
+#if DEBUG
 // NOTE: Pipeline order matters greatly. Are we authenticated at all?
 app.UseAuthentication();
 app.UseAuthorization();
+#else
+
+#endif
 
 app.UseEndpoints(endpoints => 
 {

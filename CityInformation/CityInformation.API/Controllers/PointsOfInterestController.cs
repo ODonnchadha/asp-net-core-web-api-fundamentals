@@ -56,8 +56,16 @@ namespace CityInformation.API.Controllers
         {
             try
             {
+                var cityName = User.Claims.FirstOrDefault(c => c.Type == "city")?.Value;
+                if (!await _repository.CityNameMatchesCityIdAsync(cityName, cityId))
+                {
+                    _logger.LogInformation(
+                        $"City {cityId} does not match city name {cityName} when attempting to access GetPointsOfInterest.");
+
+                    return Forbid();
+                }
+
                 var exists = await _repository.CityExistsAsync(cityId);
-                
                 if (exists.Equals(false))
                 {
                     _logger.LogInformation(

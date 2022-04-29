@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CityInformation.API</name>
+    </assembly>
+    <members>
+        <member name="M:CityInformation.API.Controllers.AuthenticationController.Validate(System.String,System.String)">
+            <summary>
+            TODO.
+            </summary>
+            <param name="name"></param>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CityInformation.API.Controllers.CitiesController.GetCity(System.Int32,System.Boolean)">
+            <summary>
+            Obtain a beautiful City by Id.
+            </summary>
+            <param name="id">The Id of the City to obtain.</param>
+            <param name="includePointsOfInterest">Shall we include Points of Interest in the City Response?</param>
+            <returns></returns>
+            <response code="200">Successfully return of a beautiful city.</response>
+        </member>
+        <member name="T:CityInformation.API.DTOs.CityWithoutPointsOfInterest">
+            <summary>
+            A City that does not contain any associated Points of Interest.
+            </summary>
+        </member>
+        <member name="P:CityInformation.API.DTOs.CityWithoutPointsOfInterest.Id">
+            <summary>
+            City Id.
+            </summary>
+        </member>
+        <member name="P:CityInformation.API.DTOs.CityWithoutPointsOfInterest.Name">
+            <summary>
+            City Name.
+            </summary>
+        </member>
+        <member name="P:CityInformation.API.DTOs.CityWithoutPointsOfInterest.Description">
+            <summary>
+            City Description.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:CityInformation.API.Interfaces.Repositories.ICityInformationRepository" -->
+        <member name="M:CityInformation.API.Repositories.CityInformationRepository.GetCitiesAsync(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Tuple.
+            </summary>
+            <param name="name"></param>
+            <param name="searchQuery"></param>
+            <param name="pageNumber"></param>
+            <param name="pageSize"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

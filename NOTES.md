@@ -243,3 +243,61 @@
     - [JSON Web Tokens](https://jwt.io/)
   - Requiring & Validating a token:
     - Middleware. JwtBearer.
+  - Working with Authorization Policies:
+    - These policies assist with building a fully-fledged authorization layer.
+      - Avoids having to enter the actual controller action.
+      - Access rights granted through policies. A policy combines a set of attributes (cliams) together.
+        - ABAC: Attribute-based Access Control.
+        - CBAC: Claims-based Access Control.
+        - PBAC: Policy-based Access Control.
+        - (Role(s)-based access control.)
+      - Policy example e.g.: "If a user is from country A and lives in a city with more than half a million people and was born between 1980 & 1985, then she is allowed action X.
+  - Improving Token-based Security with OAuth2 & OpenID Connect:
+    - Security is a large, fast-evolving topic.
+      - Standards do exist. OAuth2 & OpenID Connect:
+        - OAuth2 is an open protocol to allow secure authorization in a simple & standard method from Web, mobile, and desktop applications.
+        - OpenID Connect is a simple identity layer on top of the OAuth2 protocol.
+  - SUMMARY:
+    - Multiple ways of securing APIs exist. Token-based security is the advised approach.
+    - Create a login endpoint that accepts credentials and returns a token.
+    - Send the token to the API as a Bearer token on each request. Validate the token at the API level.
+    - Use authorization policies to create an auth layer. Vastly improve token-based security by relying on standards.
+
+- VERSIONING & DOCUMENTING API:
+  - Documenting your API with OpenAPI (Swagger) & incorporating XML comments.
+  - As APIs evolve, different versions start to coexist. & different versioning strategies exist.
+    - Version the URI: e.g.: api/v1/authors
+    - Version the URI via query string parameters: e.g.: api/authors?version=v1
+    - Custom header: e.g.: X-Version: "v1"
+    - Accept Header: e.g.: "appliction/json;version=v1"
+    - Media types: e.g.: Accept: "application/vnd.marvin.book.v1+json"
+    - NuGet package: Microsoft.AspNetCore.Mvc.Versioning
+  - Documenting your API with OpenAPI/Swagger. Documentation leads to knowledge which leads to adoption.
+    - Clear documentation saves time & money.
+  - OpenAPI Specification: Describes he capabilities of the API and how to interact with it. Standardized, in JSON or YAML format.
+  - Tools & compoents can use this specification to generate something from, like a documentation UI.
+  - Two requirements:
+    - A tool or component that generates the specification by inspecting out API.
+    - A tool or component that generates a documentation UI from that specification.
+    - NOTE: OpenAPI specification & Swagger specification are the same thing.
+    - NOTE: Swagger is a set of open-source built around that OpenAPI specification.
+    - Swashbuckle.AspNetCore helps with working with OpenAPI in ASP.NET Core.
+      - Genrates an OpenAPI specification from your API.
+      - Wraps Swagger-UI & provides an embedded version of it.
+  - Incorporate XML comments on actions.
+  - Documenting API Authentication. How to authenticate with it, if applicable.
+    - Allow user-friendly interaction with an AI that requires authentication via Swagger-UI.
+      - HTTP Authentication Schemes: Bearer, Basic, etc. API Keys. OAuth2. OpenID Connect.
+  - What's Next?
+    - Building a RESTful API with ASP.NET Core 3.
+    - Implementing Advanced RESTFul Concerns with ASP.NET Core 3.
+    - Building an Async API with ASP.NET Core.
+    - Securing ASP.NET Cpre 3 with OAuth2 & OpenID Connect.
+  - SUMMARY:
+    - As APIs evolve, different versions start to co-exist. Avoid breaking consumers that use an older version.
+    - Common versioning strategies: URI Versioning. Custom Headers. Versioned Media Types.
+    - API documentation is important for both public & private APIs.
+      - An OpenAPI specification is a standardized description of your API from which a documentation UI can be generated.
+      - Improve your documentation by:
+        - Using ActionResult<T>. Incorporating XML comments. Describing response types & status codes. Incorporate authentication.
+        - Be specific!
